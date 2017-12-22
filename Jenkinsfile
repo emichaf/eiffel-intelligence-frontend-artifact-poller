@@ -68,7 +68,7 @@ node{
                             sh('git add .')
                             sh('git commit -m "build info updated"')
 
-                            sh("git push http://${GITHUB_USER}:${GITHUB_PASSWORD}@"$WRAPPER_REPO_PATH" HEAD:"${WRAPPER_BRANCH}")
+                            sh("git push http://${GITHUB_USER}:${GITHUB_PASSWORD}@"${WRAPPER_REPO_PATH}" HEAD:"${WRAPPER_BRANCH}")
 
                    }
 				   
