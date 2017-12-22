@@ -7,7 +7,7 @@ node{
      String GIT_LONG_COMMIT
   
 
-        stage ('GITHUB Checkout EI Artifact SC') {
+        stage ('GITHUB Checkout EI FrontEnd Artifact SC') {
 	    
 		    dir ('sourcecode') {
 	                        
@@ -73,7 +73,7 @@ node{
 		
 		
 		
-		stage ('Trigger EI component jobs') {
+		stage ('Trigger EI FrontEnd component jobs') {
 		
 		    build job: 'eiffel-intelligence-frontend-artifact-wrapper/master', parameters: [[$class: 'StringParameterValue', name: 'param1', value: 'test_param']]
 				
