@@ -33,7 +33,7 @@ node{
 			// build info file been updated and pushed
 			
 			checkout scm: [$class: 'GitSCM', 
-				  userRemoteConfigs: [[url: 'https://github.com/emichaf/eiffel-intelligence-frontend-artifact-poller.git']],
+				  userRemoteConfigs: [[url: 'https://github.com/emichaf/eiffel-intelligence-frontend-artifact-wrapper.git']],
 				  branches: [[name: '*/master']]], changelog: false, poll: false
 	
 	
