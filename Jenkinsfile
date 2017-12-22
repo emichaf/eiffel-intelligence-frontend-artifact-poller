@@ -12,7 +12,7 @@ node{
 		    dir ('sourcecode') {
 	                        
 									   
-                            git poll: true, branch: "master", url: 'https://github.com/emichaf/eiffel-intelligence.git'                          
+                            git poll: true, branch: "master", url: 'https://github.com/emichaf/eiffel-intelligence-frontend.git'
                            
 							GIT_SHORT_COMMIT = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 
