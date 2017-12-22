@@ -5,6 +5,11 @@ node{
 
      String GIT_SHORT_COMMIT
      String GIT_LONG_COMMIT
+     String WRAPPER_REPO = "https://github.com/emichaf/eiffel-intelligence-frontend-artifact-wrapper.git"
+     String WRAPPER_REPO_PATH = "github.com/emichaf/eiffel-intelligence-frontend-artifact-wrapper.git"
+     String WRAPPER_PIPELINE = "eiffel-intelligence-frontend-artifact-wrapper"
+     String WRAPPER_BRANCH = "master"
+     String SOURCE_CODE_REPO = "https://github.com/emichaf/eiffel-intelligence-frontend.git"
   
 
         stage ('GITHUB Checkout EI FrontEnd Artifact SC') {
@@ -12,7 +17,7 @@ node{
 		    dir ('sourcecode') {
 	                        
 									   
-                            git poll: true, branch: "master", url: 'https://github.com/emichaf/eiffel-intelligence-frontend.git'
+                            git poll: true, branch: "master", url: "$SOURCE_CODE_REPO"
                            
 							GIT_SHORT_COMMIT = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 
@@ -33,7 +38,7 @@ node{
 			// build info file been updated and pushed
 			
 			checkout scm: [$class: 'GitSCM', 
-				  userRemoteConfigs: [[url: 'https://github.com/emichaf/eiffel-intelligence-frontend-artifact-wrapper.git']],
+				  userRemoteConfigs: [[url: "$WRAPPER_REPO"]],
 				  branches: [[name: '*/master']]], changelog: false, poll: false
 	
 	
@@ -63,7 +68,7 @@ node{
                             sh('git add .')
                             sh('git commit -m "build info updated"')
 
-                            sh("git push http://${GITHUB_USER}:${GITHUB_PASSWORD}@github.com/emichaf/eiffel-intelligence-frontend-artifact-wrapper.git HEAD:master")
+                            sh("git push http://${GITHUB_USER}:${GITHUB_PASSWORD}@"$WRAPPER_REPO_PATH" HEAD:"${WRAPPER_BRANCH}")
 
                    }
 				   
@@ -75,7 +80,7 @@ node{
 		
 		stage ('Trigger EI FrontEnd component jobs') {
 		
-		    build job: 'eiffel-intelligence-frontend-artifact-wrapper/master', parameters: [[$class: 'StringParameterValue', name: 'param1', value: 'test_param']]
+		    build job: "${WRAPPER_PIPELINE}"/"${WRAPPER_BRANCH}", parameters: [[$class: 'StringParameterValue', name: 'param1', value: 'test_param']]
 				
         }
 		
