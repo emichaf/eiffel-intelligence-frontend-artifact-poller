@@ -3,14 +3,19 @@ node{
      // Poll every minute
      properties([pipelineTriggers([pollSCM('* * * * *')])])
 
-     String GIT_SHORT_COMMIT
      String GIT_LONG_COMMIT
+
+     String SOURCE_CODE_REPO_URI = "https://github.com/emichaf/eiffel-intelligence-frontend.git"
+     String SOURCE_CODE_BRANCH = "master"
+
      String WRAPPER_REPO = "https://github.com/emichaf/eiffel-intelligence-frontend-artifact-wrapper.git"
      String WRAPPER_REPO_PATH = "github.com/emichaf/eiffel-intelligence-frontend-artifact-wrapper.git"
+   	 String build_info_file = 'build_info.yaml'
+
      String WRAPPER_PIPELINE = "eiffel-intelligence-frontend-artifact-wrapper"
      String WRAPPER_BRANCH = "master"
-     String SOURCE_CODE_REPO = "https://github.com/emichaf/eiffel-intelligence-frontend.git"
-  
+
+
 
         stage ('GITHUB Checkout EI FrontEnd Artifact SC') {
 	    
@@ -19,8 +24,6 @@ node{
 									   
                             git poll: true, branch: "master", url: "$SOURCE_CODE_REPO"
                            
-							GIT_SHORT_COMMIT = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-
                             GIT_LONG_COMMIT =  sh(returnStdout: true, script: "git log --format='%H' -n 1").trim()
             }
               
@@ -51,14 +54,13 @@ node{
 							
 							
 							// Update build_info.yaml file with github hash
-							String file_name = 'build_info.yaml'
-							def exists = fileExists "$file_name"
+							def exists = fileExists "$build_info_file"
 								if (exists) {
-									sh "rm $file_name"
+									sh "rm $build_info_file"
 								} 
 								
 							def yaml_content = ['commit': "$GIT_LONG_COMMIT"]                                                                          
-                            writeYaml file: "$file_name", data: yaml_content
+                            writeYaml file: "$build_info_file", data: yaml_content
 							
 
                             sh('git config user.email ${GITHUB_USER}')
@@ -78,14 +80,15 @@ node{
 		
 		
 		
-		stage ('Trigger EI FrontEnd component jobs') {
+		stage ('Trigger Wrapper Builds') {
 		
 		    build job: "${WRAPPER_PIPELINE}/${WRAPPER_BRANCH}", parameters: [[$class: 'StringParameterValue', name: 'param1', value: 'test_param']]
 				
         }
 		
 
-
+       // Clean up workspace
+       step([$class: 'WsCleanup'])
      
 	   
  }
